@@ -19,7 +19,7 @@ def getEvents():
 	city = address[-3]
 	print state
 	print city
-	return ""
+	return getInfo(city, state)
 
 @app.route("/getInfo/<city>--<state>", methods=["GET"])
 def getInfo(city, state):
@@ -27,11 +27,16 @@ def getInfo(city, state):
 	res = requests.get(url)
 	val = res.text.partition("window.__SERVER_DATA__ = ")[2].partition("</script>")[0][:-1]
 	val = val[::-1].partition(";")[2][::-1]
-	val = json.loads(val)
-	val = val["jsonld"][0][0]
-	event = val['url'][::-1].partition("-")[0][::-1]
-	info = {"id": event, "longitude": val['location']['geo']['longitude'], "latitude": val['location']['geo']['latitude']}
-	return jsonify(info)
+	valz = json.loads(val)
+	info_vals = []
+	for val in valz["jsonld"][0]:
+		try:
+			event = val['url'][::-1].partition("-")[0][::-1]
+			info = {"id": event, "longitude": val['location']['geo']['longitude'], "latitude": val['location']['geo']['latitude']}
+			info_vals.append(info)
+		except Exception as exp:
+			print exp
+	return jsonify(info_vals)
 
 
 if __name__ == "__main__":

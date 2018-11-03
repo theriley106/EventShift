@@ -121,14 +121,15 @@ function moveToAddress() {
 
   var place = autocomplete.getPlace();
   var coords = place.geometry.location.toJSON();
-  map.setView(new L.LatLng(coords.lat, coords.lng), 15);
+  map.setView(new L.LatLng(coords.lat, coords.lng), 10);
 
   var address = document.getElementById('autocomplete').value;
   console.log(address);
   var url = "/getEvents?location=" + address;
   jsonString = httpGet(url);
   // This is the actual file structure
-  console.log(jsonString);
+  console.log(jsonString)
+  obVal = JSON.parse(jsonString);
   // Converting string to json so we can interact with it
 
 
@@ -140,10 +141,6 @@ function moveToAddress() {
     newVal = `{"type": "Feature","geometry": { "type": "Point", "coordinates": [-122.5046792232, 37.7744419948]},"properties": {"marker-symbol": "MARKER_SYMBOL","marker-color": "#6e8dea","city": "700 Block of 44TH AVE", "BOX_VAL": "HTML"}}`;
     newVal = newVal.replace("-122.5046792232", listElem.longitude);
     newVal = newVal.replace("37.7744419948", listElem.latitude);
-    newVal = newVal.replace("MARKER_SYMBOL", listElem.priority);
-    newVal = newVal.replace("#6e8dea", listElem.mapColor);
-    newVal = newVal.replace("700 Block of 44TH AVE", listElem.address);
-    newVal = newVal.replace("HTML", listElem.HTML);
     geoJson.push(JSON.parse(newVal));
   }
   // This is the geo json for the coords that are not the main ones
@@ -153,8 +150,8 @@ function moveToAddress() {
 var popup1 = new L.Popup({'autoClose':false});
 popup1.setLatLng([coords.lat, coords.lng]);
 var url = "/genPopUp/" + coords.lat + "/" + coords.lng;
-var htmlString = httpGet(url);
-var htmlString = "<h1><center><b>" + address + "</b></center></h1>" + htmlString;
+// var htmlString = httpGet(url);
+var htmlString = "";
 popup1.setContent(htmlString);
 L.marker([coords.lat, coords.lng]).addTo(map)
     .bindPopup(popup1).openPopup();
@@ -178,6 +175,9 @@ L.marker([coords.lat, coords.lng]).addTo(map)
       });
 myLayer.setGeoJSON(geoJson);
       // Add features to the map
+      for (i=0; i<document.getElementsByClassName("leaflet-interactive").length; i++){
+        document.getElementsByClassName("leaflet-interactive")[i].src = "//api.tiles.mapbox.com/mapbox.js/v3.1.1/images/marker-icon.png";
+      }
   }
 
 function httpGet(theUrl)
