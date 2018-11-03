@@ -177,6 +177,8 @@ myLayer.setGeoJSON(geoJson);
       // Add features to the map
       for (i=0; i<document.getElementsByClassName("leaflet-interactive").length; i++){
         document.getElementsByClassName("leaflet-interactive")[i].src = "//api.tiles.mapbox.com/mapbox.js/v3.1.1/images/marker-icon.png";
+        document.getElementsByClassName("leaflet-interactive")[i].style.height = "30px";
+        document.getElementsByClassName("leaflet-interactive")[i].style.width = "25px";
       }
   }
 
