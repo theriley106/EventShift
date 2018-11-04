@@ -75,7 +75,7 @@
   <br><br>
   <div id="custom-search-input">
       <div class="input-group col-md-12" id="locationField">
-          <input type="text" id="autocomplete" name="address" class="form-control input-lg flipthis-highlight" placeholder="Input an Address in San Francisco">
+          <input type="text" id="autocomplete" name="address" class="form-control input-lg flipthis-highlight" placeholder="Input your home address">
           <span class="input-group-btn">
               <button class="btn btn-info btn-lg" onclick="openModel();">
                   <i class="glyphicon glyphicon-search"></i>
@@ -138,11 +138,17 @@ function moveToAddress() {
   for (fileIndex in obVal) {
     // The json object is a list, so this is the INDEX of all items in the list
     listElem = obVal[fileIndex];
-    newVal = `{"type": "Feature","geometry": { "type": "Point", "coordinates": [-122.5046792232, 37.7744419948]},"properties": {"marker-symbol": "MARKER_SYMBOL","marker-color": "#6e8dea","city": "700 Block of 44TH AVE", "BOX_VAL": "HTML"}}`;
+    newVal = `{"type": "Feature","geometry": {"type": "Point", "coordinates": [-122.5046792232, 37.7744419948]},"properties": {"id": "ID_VAL", "name": "name_space","loc": "LOCAT",  "URL": "DIS_URL", "marker-symbol": "MARKER_SYMBOL","marker-color": "#6e8dea","city": "700 Block of 44TH AVE", "BOX_VAL": "HTML"}}`;
+    newVal = newVal.replace("DIS_URL", listElem.image);
+    newVal = newVal.replace("name_space", listElem.name);
+    newVal = newVal.replace("ID_VAL", listElem.id);
+
+    newVal = newVal.replace("LOCAT", listElem.date);
     newVal = newVal.replace("-122.5046792232", listElem.longitude);
     newVal = newVal.replace("37.7744419948", listElem.latitude);
     geoJson.push(JSON.parse(newVal));
   }
+  geoJson.shift();
   // This is the geo json for the coords that are not the main ones
 
 
@@ -165,8 +171,7 @@ L.marker([coords.lat, coords.lng]).addTo(map)
               feature = marker.feature;
 
           // Create custom popup content
-          var popupContent =  feature.properties.BOX_VAL;
-
+          var popupContent = '<center><img src="' + feature.properties.URL + '" style="width:150px!important;height150px;"><b><p>' + feature.properties.name + '<br>' + feature.properties.loc + '<br><a href="/event/' + feature.properties.id + '">View Event</a></b></p></center>';
           // http://leafletjs.com/reference.html#popup
           marker.bindPopup(popupContent,{
               closeButton: false,
@@ -180,6 +185,7 @@ myLayer.setGeoJSON(geoJson);
         document.getElementsByClassName("leaflet-interactive")[i].style.height = "30px";
         document.getElementsByClassName("leaflet-interactive")[i].style.width = "25px";
       }
+      map.closePopup();
   }
 
 function httpGet(theUrl)
