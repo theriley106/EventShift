@@ -125,7 +125,7 @@ function moveToAddress() {
 
   var address = document.getElementById('autocomplete').value;
   console.log(address);
-  var url = "/getEvents?location=" + address;
+  var url = "/getEvents?location=" + address + "&lat=" + coords.lat + "&long=" + coords.lng;
   jsonString = httpGet(url);
   // This is the actual file structure
   console.log(jsonString)
